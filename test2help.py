@@ -21,7 +21,7 @@ async def handle_setvolume(request):
 
 async def handle_runopencv(request):
     print("run opencv")
-    narerundar.runNarerundar()
+    narerundar().runNarerundar()
     return web.Response(text="OK")
 
 app = web.Application()

@@ -5,11 +5,16 @@ from PIL import Image
 
 
 class narerundar:
-    def runNarerundar():
+    layer1 = None
+    layer2 = None
+    im = None
 
-        layer1 = None
-        layer2 = None
+    def __init__(self):
+        self.layer1 = None
+        self.layer2 = None
         im = None
+
+    def runNarerundar(self):
 
         windowname = "Narerundar"
         cv2.namedWindow(windowname, cv2.WINDOW_NORMAL)
@@ -28,7 +33,7 @@ class narerundar:
         cam = cv2.VideoCapture(0)
         overlayframe = cv2.imread('./img/build.png', cv2.IMREAD_UNCHANGED)
         #overlayframe = cv2.imread(sys.argv[1], cv2.IMREAD_UNCHANGED)
-        layer2 = Image.fromarray(overlayframe)
+        self.layer2 = Image.fromarray(overlayframe)
 
         framecnt = 0
         sz = None
@@ -48,7 +53,7 @@ class narerundar:
             faces = cascade.detectMultiScale(gray)
 
             if len(faces) > 0:
-                layer1 = Image.fromarray(np.uint8(frame)).convert('RGBA')
+                self.layer1 = Image.fromarray(np.uint8(frame)).convert('RGBA')
                 layerc = Image.new('RGBA', (h,w), (0,0,0,0))
 
                 for rect in faces:
@@ -58,16 +63,16 @@ class narerundar:
                         continue
 
                     zoom = 2
-                    vratio = int(rect[2] * zoom) / layer2.height
+                    vratio = int(rect[2] * zoom) / self.layer2.height
                     sz = (int(rect[2] * zoom), int(rect[3] * vratio))
                     coord = list(rect)
                     coord[2] = coord[0] + coord[2]
                     coord[3] = coord[1] + coord[3]
 
-                    tmp = layer2.resize(sz)
+                    tmp = self.layer2.resize(sz)
                     layerc.paste(tmp, (coord[0] - int(rect[2]/zoom), coord[1] - int(rect[3]/zoom)), tmp)
 
-                im = Image.alpha_composite(layer1, layerc)
+                im = Image.alpha_composite(self.layer1, layerc)
                 cv2.imshow(windowname, np.asarray(im))
 
             else:
